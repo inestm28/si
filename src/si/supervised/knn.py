@@ -1,11 +1,11 @@
-from .model import Model
-from ..util import l2_distance, accuracy_score
 import numpy as np
+from ..util import l2_distance, accuracy_score
+from si.supervised.model import Model
 
 
 class KNN(Model):
     def __init__(self, num_neighbors, classification=True):
-        super(KNN).__init__()
+        super(KNN, self).__init__()
         self.num_neighbors = num_neighbors
         self.classification = classification
 
