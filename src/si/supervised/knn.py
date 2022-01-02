@@ -1,6 +1,6 @@
 import numpy as np
 from ..util import l2_distance, accuracy_score
-from si.supervised.model import Model
+from .model import Model
 
 
 class KNN(Model):
