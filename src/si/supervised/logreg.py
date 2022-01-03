@@ -35,7 +35,7 @@ class LogisticRegression(Model):
         _x = np.hstack(([1],X))
         z = np.dot(self.theta, _x)
         h = sigmoid(z) #predicted value
-        if h <=0.5:
+        if h <0.5:
             return 0
         else:
             return 1
@@ -81,8 +81,9 @@ class LogisticRegressionReg(LogisticRegression):
     def predict(self, X):
         assert self.is_fitted, 'model must be fitted before predicting'
         _x = np.hstack(([1],X))
-        p = sigmoid(np.dot(self.theta, _x))
-        if p <=0.5:
+        z = np.dot(self.theta, _x)
+        h = sigmoid(z) #predicted value
+        if h <0.5:
             return 0
         else:
             return 1
