@@ -40,10 +40,14 @@ class LogisticRegression(Model):
         else:
             return 1
 
-    def cost(self, X, y):
-        z = np.dot(self.theta, X.T)
+    def cost(self, X=None, y=None, theta=None):
+        X=add_intersect(X) if X is not None else self.X
+        y=y if y is not None else self.y
+        theta=theta if theta is not None else self.theta
+
+        z = np.dot(self.theta, self.X.T)
         y1 = sigmoid(z) #predicted value
-        return -(1/len(X)) * np.sum(y*np.log(y1) + (1-y)*np.log(1-y1))
+        return -(1/len(self.X)) * np.sum(self.y*np.log(y1) + (1-self.y)*np.log(1-y1))
 
 
 class LogisticRegressionReg(LogisticRegression):
@@ -88,10 +92,14 @@ class LogisticRegressionReg(LogisticRegression):
         else:
             return 1
 
-    def cost(self, X, y):
+    def cost(self, X=None, y=None, theta=None):
         # it adds a penalty term in the cost function
-        z = np.dot(self.theta, X.T)
+        X=add_intersect(X) if X is not None else self.X
+        y=y if y is not None else self.y
+        theta=theta if theta is not None else self.theta
+
+        z = np.dot(self.theta, self.X.T)
         y1 = sigmoid(z) #predicted value
-        penalizacao = np.dot(self.theta[1:],self.theta[1:]) * self.lambd / (2*len(X))
-        cost = -(1/len(X)) * np.sum(y*np.log(y1) + (1-y)*np.log(1-y1)) + penalizacao
+        penalizacao = np.dot(self.theta[1:],self.theta[1:]) * self.lambd / (2*len(self.X))
+        cost = -(1/len(self.X)) * np.sum(self.y*np.log(y1) + (1-self.y)*np.log(1-y1)) + penalizacao
         return cost

@@ -2,7 +2,7 @@ from .util import train_test_split
 import numpy as np
 import itertools
 
-class CrossValidationScore:
+class Cross_Validation:
     def __init__(self, model, dataset,score=None, **kwargs):
         self.model=model
         self.dataset=dataset
@@ -18,7 +18,7 @@ class CrossValidationScore:
         test_scores = []
         ds=[]
         for _ in range(self.cv): #underscore pq não vamos precisar do valor da variável
-            train, test =train_test_split(self.dataset, self.split)
+            train, test = train_test_split(self.dataset, self.split)
             ds.append((train, test))
             self.model.fit(train)
             if not self.score:
@@ -35,12 +35,12 @@ class CrossValidationScore:
         self.ds=ds
         return train_scores, test_scores
 
-    def toDataFrame(self):
+    def toDataframe(self):
         import pandas as pd
         assert self.train_scores and self.test_scores, 'Need to run code first'
         return pd.DataFrame({'Train Scores': self.train_scores, 'Test scores': self.test_scores})
 
-class GridSearchCV:
+class Grid_Search:
     def __init__(self, model, dataset, parameters, **kwargs):
         self.model=model
         self.dataset=dataset
@@ -61,11 +61,11 @@ class GridSearchCV:
         for conf in itertools.product(*values):
             for i in range(len(attrs)):
                 setattr(self.model, attrs[i], conf[i])
-            scores=CrossValidationScore(self.model, self.dataset, **self.kwargs).run()
+            scores=Cross_Validation(self.model, self.dataset, **self.kwargs).run()
             self.results.append((conf, scores))
         return self.results
 
-    def toDataFrame(self):
+    def toDataframe(self):
         import pandas as pd
         assert self.results, 'The grid search needs to be ran.'
         data=dict()
