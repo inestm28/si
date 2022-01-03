@@ -9,7 +9,7 @@ class LogisticRegression(Model):
         super(LogisticRegression, self).__init__()
         self.epochs=epochs
         self.alph=alph
-        self.theta=None
+        self.theta=None #theta are randomly initialized values
 
     def fit(self, dataset): #using x_train and y_train to train the model
         X,y = dataset.getXy()

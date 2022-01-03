@@ -6,7 +6,7 @@ class LinearRegression(Model):
     def __init__(self, gd=False, epochs=1000, alph=0.001):
         super(LinearRegression, self).__init__()
         self.gd=gd
-        self.theta=None
+        self.theta=None #theta are randomly initialized values
         self.epochs=epochs
         self.alph=alph #tx de aprendizagem
 
