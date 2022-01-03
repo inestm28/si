@@ -1,14 +1,14 @@
-from . import Model
-from ..util import mse
+from .model import Model
+from ..util import mse, add_intersect
 import numpy as np
 
 class LinearRegression(Model):
-    def __init__(self, gd=False, epochs=1000, lr=0.001):
+    def __init__(self, gd=False, epochs=1000, alph=0.001):
         super(LinearRegression, self).__init__()
         self.gd=gd
         self.theta=None
         self.epochs=epochs
-        self.lr=lr
+        self.alph=alph #tx de aprendizagem
 
     def fit(self, dataset):
         X,y =dataset.getXy()
@@ -23,13 +23,13 @@ class LinearRegression(Model):
         self.theta=np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
 
     def train_gd(self, X, y): #gradient descendent
-        m=X.shape[0]
-        n=X.shape[1]
+        m=X.shape[0] #no de linhas
+        n=X.shape[1] #no de colunas
         self.history={}
         self.theta=np.zeros(n)
         for epoch in range(self.epochs):
             grad=1/m * (X.dot(self.theta)-y).dot(X)
-            self.theta-=self.lr*grad
+            self.theta -= self.alph*grad
             self.history[epoch]=[self.theta[:], self.cost()]
 
     def predict(self, X):
@@ -49,25 +49,38 @@ class LinearRegression(Model):
     #     return mse(y, y_pred)/2
 
 class LinearRegressionReg(LinearRegression):
-    def __init__(self, gd=False, epochs=1000, lr=0.001, lbd=1): #linear regress. model with L2 regularization
-        super(LinearRegressionReg, self).__init__(gd=gd, epochs=epochs,lr=lr)
-        self.lbd=lbd
+    #with L2 regularization, aka, Ridge Regression
+    #solves overfitting by penalizing the cost function
+    #it adds a penalty term in the cost function
+    #lambda is the regularization parameter, which controls the trade-off between fitting the training data well vs keeping the params small to avoid overfitting.
+    def __init__(self, gd=False, epochs=1000, alph=0.001, lambd=1):
+        super(LinearRegressionReg, self).__init__(gd=gd, epochs=epochs, alph=alph)
+        self.lambd=lambd  #(parâmetro de regularização)
 
     def train_closed(self, X, y): #uses closed form to fit the model
         n=X.shape[1]
         identity=np.eye(n)    #cria matriz identidade e muda-se 1o valor da diag para zero (para teta zero ser 0)
         identity[0,0]=0
-        self.theta=np.linalg.inv(X.T.dot(X)+self.lbd*identity).dot(X.T).dot(y)
+        self.theta=np.linalg.inv(X.T.dot(X) + self.lambd * identity).dot(X.T).dot(y)
         self.is_fitted=True
 
     def train_gd(self, X, y):
-        m=X.shape[0]
-        n=X.shape[1]
+        m=X.shape[0] #no de linhas
+        n=X.shape[1] #no de colunas
         self.history={}
         self.theta=np.zeros(n)
-        lbds=np.full(m, self.lbd) #vector [0 lambda lambda lambda lambda)
-        lbds[0]=0
+        lambdas=np.full(m, self.lambd) #preenche um vector de m linhas com o valor do lambda (parâmetro de regularização): vector [lambda lambda lambda lambda]
+        lambdas[0]=0     #vector [0 lambda lambda lambda lambda]
         for epoch in range(self.epochs):
-            grad=(X.dot(self.theta)-y).dot(X)
-            self.theta -= (self.lr/m)*(lbds+grad)
+            grad=1/m * (X.dot(self.theta)-y).dot(X)
+            self.theta -= (self.alph/m)*(self.theta*lambdas+grad)  #self.theta -= self.alph*grad
             self.history[epoch] = [self.theta[:], self.cost()]
+
+    def predict(self, X):
+        assert self.is_fitted
+        _x = np.hstack(([1], X))
+        return np.dot(self.theta, _x)
+
+    def cost(self, X, y):
+        y_pred = np.dot(X, self.theta)
+        return mse(y, y_pred) / 2
