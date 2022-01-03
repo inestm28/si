@@ -13,8 +13,8 @@ class LinearRegression(Model):
     def fit(self, dataset):
         X,y =dataset.getXy()
         X=np.hstack((np.ones((X.shape[0],1)),X))
-        # self.X=X
-        # self.y=y
+        self.X=X
+        self.y=y
         #closed form or GD
         self.train_gd(X,y) if self.gd else self.train_closed(X,y)
         self.is_fitted=True
@@ -32,14 +32,14 @@ class LinearRegression(Model):
             self.theta-=self.lr*grad
             self.history[epoch]=[self.theta[:], self.cost()]
 
-    def predict(self, x):
+    def predict(self, X):
         assert self.is_fitted, 'Model must be fit before predicting'
-        _x=np.hstack(([1], x))
+        _x=np.hstack(([1], X))
         return np.dot(self.theta, _x)
 
-    def cost(self):
-        y_pred=np.dot(self.X, self.theta)
-        return mse(self.y, y_pred)/2
+    def cost(self, X, y):
+        y_pred=np.dot(X, self.theta)
+        return mse(y, y_pred)/2
 
     # def cost(selfself, X=None, y=None, theta=None):
     #     X=add_intersect(X) if X is not None else self.X
