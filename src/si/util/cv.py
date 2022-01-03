@@ -74,3 +74,11 @@ class GridSearchCV:
             for r in self.results:
                 v.append(r[0][i])
             data[k]=v
+        for i in range(len(self.results[0][1][0])):
+            treino, teste = [], []
+            for r in self.results:
+                treino.append(r[1][0][i])
+                teste.append(r[1][1][i])
+            data['Train ' + str(i + 1)] = treino
+            data['Test ' + str(i + 1)] = teste
+        return pd.DataFrame(data)
