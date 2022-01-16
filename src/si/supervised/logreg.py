@@ -3,12 +3,14 @@ from .model import Model
 from ..util import add_intersect, sigmoid
 
 class LogisticRegression(Model):
+    '''
+    used when dependent variable (y)is categorical
+    '''
     #no regularization
-    #alpha is the learning rate
     def __init__(self, epochs=1000, alph=0.3):
         super(LogisticRegression, self).__init__()
         self.epochs=epochs
-        self.alph=alph
+        self.alph=alph #taxa de aprendizagem
         self.theta=None #theta are randomly initialized values
 
     def fit(self, dataset): #using x_train and y_train to train the model
@@ -35,20 +37,20 @@ class LogisticRegression(Model):
         _x = np.hstack(([1],X))
         z = np.dot(self.theta, _x)
         h = sigmoid(z) #predicted value
-        if h <0.5:
+        if h <0.5: #threshold value
             return 0
         else:
             return 1
 
-    def cost(self, X=None, y=None, theta=None):
+    def cost(self, X=None, y=None, theta=None): #dá a medida de quão longe o valor previsto está do output original
         X=add_intersect(X) if X is not None else self.X
         y=y if y is not None else self.y
         theta=theta if theta is not None else self.theta
 
         z = np.dot(self.theta, self.X.T)
         y1 = sigmoid(z) #predicted value
-        return -(1/len(self.X)) * np.sum(self.y*np.log(y1) + (1-self.y)*np.log(1-y1))
-
+        return -(1/len(self.X)) * np.sum(self.y*np.log(y1) + (1-self.y)*np.log(1-y1)) #negative function is to maximize the probability by minimizing loss function.
+                                                                                      #Decreasing the cost will increase the maximum likelihood
 
 class LogisticRegressionReg(LogisticRegression):
     #with L2 regularization, aka, Ridge Regression

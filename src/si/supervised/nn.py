@@ -115,3 +115,36 @@ class NN(Model):
         y = y if y is not None else self.dataset.y
         output = self.predict(X)
         return self.loss(y, output)
+
+# class Conv2D
+# im2col.py para pasta util
+# class Pooling2D
+# class MaxPooling2D(Pooling2D)
+#     def pool????
+#         raise NotImplementedError
+#     def dpool????
+#         raise NotImplementedError
+
+#def forward????
+    # self.X_shape = input.shape
+    # n,h,w,d = input.shape
+    # h_out = (h-self.size) / self.stride + 1
+    # w_out = (w-self.size) / self.stride + 1
+    # if not w_out.is_integer() or not h_out.is_integer():
+    #     raise Exception('Invalid output dimension!')
+    # h_out,w_out = int(h_out), int(w_out)
+    # x_reshaped=input.reshape(n*d,h,w,1)
+    # self.X_col = im2col(X_reshaped, self.size, self.size, padding=0, stride=self.stride)
+    # out,self.max_idx = self.pool(self.X_col)
+    # out = out.reshape(h_out, w_out,n,d)
+    # out = out.transpose(3,2,0,1)
+    # return out
+
+# def backward(self, output_error, learning_rate):
+#     n, w, h, d = self.X_shape
+#     dX_col = np.zeros_like(self.X_col)
+#     dout_col = output_error.transpose(2,3,0,1).ravel()
+#     dX = self.dpool(dX_col, dout_col, self.max_idx)
+#     dX = col2im(dX, (n+d,1,h,w),self.size, self.size, padding=0, stride=self.stride)
+#     dX=dX.reshape(self.X_shape)
+#     return dX
