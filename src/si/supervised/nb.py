@@ -1,10 +1,9 @@
-from .model import Model
-from src.si.util.metrics import accuracy_score
-from ..util import add_intersect
+# from .model import Model
+from ..util import accuracy_score
 import numpy as np
 
 
-class CategoricalNB(Model):
+class CategoricalNB:
     '''
     Naive Bayes Classifier
     predict the conditional probability of a class
@@ -12,22 +11,21 @@ class CategoricalNB(Model):
     2o -> multiply that by P(Class). To calculate the P(Class), count the number of samples (rows) for a specific class and
           divide that by the total number of samples.
     '''
-    def __init__(self):
-        super(CategoricalNB, self).__init__()
+    # def __init__(self):
+    #     super(CategoricalNB, self).__init__()
 
     def fit(self, X, y):
         '''
         Compute summary and prior statistics for each class (y feature) in the (training) dataset.
         '''
-        # X,y =dataset.getXy()
         self.X=X
         self.y=y
         # get number of samples (rows) and features (columns)
-        self.n_samples=X.shape[0] #no de linhas
-        self.n_features=X.shape[1] #no de colunas
+        self.n_samples=self.X.shape[0] #no de linhas
+        self.n_features=self.X.shape[1] #no de colunas
 
         # get number of uniques classes
-        self.n_classes = len(np.unique(y))
+        self.n_classes = len(np.unique(self.y))
 
         # create three zero-matrices to store summary stats & prior
         self.mean = np.zeros((self.n_classes, self.n_features)) #(no linhas=no classes, no col=no features)
@@ -43,6 +41,8 @@ class CategoricalNB(Model):
             self.mean[c, :] = np.mean(X_c, axis=0) #calcular a média de cada feature (coluna do dataset X) por cada classe
             self.variance[c, :] = np.var(X_c, axis=0)
             self.priors[c] = X_c.shape[0] / self.n_samples #frequência/probabilidade de uma classe -> no amostras que pertencem a uma classe / no total de amostras
+
+        # self.is_fitted = True
 
     #TO MAKE THE PREDICTION:
     #obtain the probability that the data belong to a certain class or, more specifically, come from the same distribution.
@@ -90,5 +90,5 @@ class CategoricalNB(Model):
         #[amostra1->indice da classe com maior probabilidade, amostra 2->..., ...]
         return np.array(y_hat)
 
-    def get_accuracy(self, y_t, y_hat):
-        return np.sum(y_t == y_hat) / len(y_t)
+    def cost(self, y_t, y_hat):
+        return accuracy_score(y_t, y_hat)

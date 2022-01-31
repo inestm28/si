@@ -1,3 +1,4 @@
+from copy import copy
 import numpy as np
 
 # Y is reserved to idenfify dependent variables
