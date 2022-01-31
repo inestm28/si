@@ -1,4 +1,4 @@
-from src.si.supervised.model import Model
+from .model import Model
 from src.si.util.metrics import accuracy_score
 from ..util import add_intersect
 import numpy as np
@@ -13,13 +13,13 @@ class CategoricalNB(Model):
           divide that by the total number of samples.
     '''
     def __init__(self):
-        super().__init__()
+        super(CategoricalNB, self).__init__()
 
-    def fit(self, dataset):
+    def fit(self, X, y):
         '''
         Compute summary and prior statistics for each class (y feature) in the (training) dataset.
         '''
-        X,y =dataset.getXy()
+        # X,y =dataset.getXy()
         self.X=X
         self.y=y
         # get number of samples (rows) and features (columns)
@@ -90,9 +90,5 @@ class CategoricalNB(Model):
         #[amostra1->indice da classe com maior probabilidade, amostra 2->..., ...]
         return np.array(y_hat)
 
-    def cost(self, X=None, y=None):
-        X=add_intersect(X) if X is not None else self.X
-        y=y if y is not None else self.y
-
-        y_pred = np.ma.apply_along_axis(self.predict(X), axis=0, arr=X.T)
-        return accuracy_score(y, y_pred)
+    def get_accuracy(self, y_t, y_hat):
+        return np.sum(y_t == y_hat) / len(y_t)
