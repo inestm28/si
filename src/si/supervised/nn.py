@@ -51,12 +51,10 @@ class Dense(Layer):
     def backward(self, output_error, lr):
         '''
         compare the predicted output with the actual output.
-        Next, fine-tune weights and the bias in such a manner that our predicted output becomes closer to the actual output,
+        Next, fine-tune weights and the bias
+        in such a manner that our predicted output becomes closer to the actual output,
         known as "training the neural network".
-        1o -> Calculating the cost/loss -> difference between the predicted output and the actual output.
-        2o -> minimize cost function
-
-        'computes dE/dW, dE/dB for a given output_error=dE/dY'
+        'computes weights error and bias error for a given output_error'
         '''
         # compute the weights error dE/dW = X.T*dE/dY
         weights_error = np.dot(self.input.T, output_error)
@@ -69,6 +67,9 @@ class Dense(Layer):
         return input_error
 
 class Activation(Layer):
+    '''
+    activation function that operates upon the value received
+    '''
     def __init__(self, activation):
         self.activation = activation
 
@@ -79,18 +80,18 @@ class Activation(Layer):
 
     def backward(self, output_error, lr):
         # learning rate is not used because there is no "learnable" parameters
-        # only passes the error do the previous layer
+        # only passes the error do to the previous layer
         return np.multiply(self.activation.prime(self.input), output_error)
 
 
 class NN(Model):
     def __init__(self, epochs=1000, lr=0.001, verbose=True):
         #neural network model
-        self.epochs = epochs
-        self.lr = lr
+        self.epochs = epochs #cycle of forward and backward
+        self.lr = lr #learning rate (alpha)
         self.verbose = verbose
         self.layers = []
-        self.loss = mse
+        self.loss = mse #loss function -> Mean squared error
         self.loss_prime = mse_prime
 
     def add(self, layer):

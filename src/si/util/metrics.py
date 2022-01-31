@@ -65,5 +65,8 @@ def r2_score(y_true, y_pred):
     return score
 
 def confusion_matrix(y_true, y_pred):
+    '''
+    allows visualization of the performance of an algorithm
+    '''
     conf_matrix_df = pd.crosstab(y_true, y_pred, rownames=['desejado'], colnames=['previsto'], margins=True)
     return pd.DataFrame(conf_matrix_df)
