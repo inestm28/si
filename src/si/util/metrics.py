@@ -1,4 +1,4 @@
-
+import pandas as pd
 import numpy as np
 
 
@@ -63,3 +63,7 @@ def r2_score(y_true, y_pred):
     # R^2.
     score = 1 - numerator / denominator
     return score
+
+def confusion_matrix(y_true, y_pred):
+    conf_matrix_df = pd.crosstab(y_true, y_pred, rownames=['desejado'], colnames=['previsto'], margins=True)
+    return pd.DataFrame(conf_matrix_df)
