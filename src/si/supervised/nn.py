@@ -29,9 +29,15 @@ class Layer(ABC):
 
 class Dense(Layer):
     #Fully Connected layer
+    '''
+    The dense layer’s neuron receives output from every neuron of its preceding layer,
+    where neurons of the dense layer perform matrix-vector multiplication,
+    where the row vector of the output from the preceding layers is equal to the column vector of the dense layer.
+    Values under the matrix are the trained parameters of the preceding layers and also can be updated by the backpropagation.
+    '''
     def __init__(self, input_size, output_size):
-        self.weights= np.random.rand(input_size, output_size) -0.5
-        self.bias= np.zeros((1, output_size))
+        self.weights= np.random.rand(input_size, output_size) -0.5 #matriz com shape (no linhas=no elementos matriz input, no colunas=no elementos matriz output)
+        self.bias= np.zeros((1, output_size)) #array com shape(1 linha, no colunas=no elementos output)
 
     def setWeights(self, weights, bias):
         #Sets the weight and the bias for the NN
@@ -43,12 +49,23 @@ class Dense(Layer):
         self.bias = bias
 
     def forward(self, input):
+        '''
+        predictions are made based on the values in the input nodes and the weights.
+        '''
         self.input = input
-        self.output = np.dot(self.input, self.weights) + self.bias
+        self.output = np.dot(self.input, self.weights) + self.bias #produto escalar entre inputs and weights e no final soma-se o bias
         return self.output
 
     def backward(self, output_error, lr):
+        '''
+        compare the predicted output with the actual output.
+        Next, fine-tune weights and the bias in such a manner that our predicted output becomes closer to the actual output,
+        known as "training the neural network".
+        1o -> Calculating the cost/loss -> difference between the predicted output and the actual output.
+        2o -> minimize cost function
+
         'computes dE/dW, dE/dB for a given output_error=dE/dY'
+        '''
         # compute the weights error dE/dW = X.T*dE/dY
         weights_error = np.dot(self.input.T, output_error)
         # compute the bias error dE/dB
