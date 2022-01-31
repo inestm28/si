@@ -96,9 +96,6 @@ class NN(Model):
     def add(self, layer):
         self.layers.append(layer)
 
-    def use_loss(self, func, func2):
-        self.loss, self.loss_prime = func, func2
-
     def fit(self, dataset):
         X, y = dataset.getXy()
         self.dataset = dataset
